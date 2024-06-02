@@ -3,6 +3,10 @@ require('dotenv').config();
 
 const commands = [
     {
+        name:'info',
+        description:'Information about the bot --Stop Stalking the cute cat',
+    },
+    {
         name: 'hello',
         description: 'Says hello',
         
