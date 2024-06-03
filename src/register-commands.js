@@ -26,24 +26,14 @@ const commands = [
                 description:'No Need for a description huh',
                 type:ApplicationCommandOptionType.Number,
                 required:true,
-                choices:[
-                    {
-                        name:'modernAddition',
-                        value:'27493274962378463897467891648732618794362781463789214673892648792164',
-                    }
-                ],
+                
             },
             {
                 name:'second_number',
                 description:'No Need for a description huh',
                 type:ApplicationCommandOptionType.Number,
                 required:true,
-                choices:[
-                    {
-                        name:'modernAddition',
-                        value:'27493274962378463897467891648732618794362781463789214673892648792164',
-                    }
-                ],
+                
             }
         ]
     }
