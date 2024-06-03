@@ -1,46 +1,28 @@
-// const getAllFiles = require("../utils/getAllFiles")
-// const path = require("path")
-
-// module.exports=(client)=>{
-//     const eventFolders=getAllFiles('./src/events',true)
-// //    eventFolders.forEach(eventFolder=>{
-// //     const eventFiles=getAllFiles(eventFolder)
-// //     console.log(eventFiles)   
-// //    })
-//     for (const eventFolder of eventFolders) {
-//         const eventFiles=getAllFiles(eventFolder)
-//         eventFiles.sort((a,b)=> a>b)
-//         console.log(eventFiles)
-//         const eventName=eventFolder.replace(/^.*[\\\/]/, '').split('/').pop()
-//         console.log(eventName)
-//         client.on(eventName,async arg=>{
-//                 for(const eventFile of eventFiles){
-//                     const eventFunction=require(eventFile)
-//                     await eventFunction(client,arg)
-//                 }
-//         })
-//     }
-// }
+const path = require('path');
 const getAllFiles = require("../utils/getAllFiles");
-const path = require("path");
 
 module.exports = (client) => {
-  const eventFolders = getAllFiles('./src/events', true);
+  const eventFolders = getAllFiles(path.join(__dirname, '../events'), true);
 
   for (const eventFolder of eventFolders) {
     const eventFiles = getAllFiles(eventFolder);
-    eventFiles.sort((a, b) => a > b);
-    const eventName = eventFolder.replace(/\\/g, '').split('/').pop();
+    eventFiles.sort((a, b) => a.localeCompare(b));
 
+    console.log('Event Files:', eventFiles); // Debug: List event files
+    const eventName = path.basename(eventFolder);
+    console.log('Event Name:', eventName); // Debug: Event name
 
     client.on(eventName, async (arg) => {
       try {
+        console.log(`Event triggered: ${eventName}`); // Debug: Event trigger
         for (const eventFile of eventFiles) {
-          const eventFunction = require(eventFile);
+          const eventFilePath = path.resolve(eventFile);
+          console.log(`Executing file: ${eventFilePath}`); // Debug: Executing file
+          const eventFunction = require(eventFilePath);
           await eventFunction(client, arg);
         }
       } catch (error) {
-        console.error(`Error in event function: ${error}`);
+        console.error(`Error in event function for event: ${eventName}`, error);
       }
     });
   }
