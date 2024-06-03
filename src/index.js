@@ -1,4 +1,5 @@
-const { Client, IntentsBitField, EmbedBuilder } = require("discord.js");
+const { Client, IntentsBitField, EmbedBuilder, ActivityType } = require("discord.js");
+const eventHandler = require("./handlers/eventHandler");
 require("dotenv").config();
 const client = new Client({
   intents: [
@@ -8,10 +9,11 @@ const client = new Client({
     IntentsBitField.Flags.MessageContent,
   ],
 });
+
+
+eventHandler(client)
 client.login(process.env.TOKEN);
-client.once("ready", () => {
-  console.log(`✅ Logged in as ${client.user.tag}`);
-});
+
 
 
 
