@@ -10,4 +10,3 @@ module.exports = {
     interaction.reply(`Pong! ${client.ws.ping}ms`);
   },
 };
-module.exports=command
