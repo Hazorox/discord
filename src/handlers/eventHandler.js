@@ -12,7 +12,7 @@ module.exports = (client) => {
     const eventName = path.basename(eventFolder);
     console.log('Event Name:', eventName); // Debug: Event name
 
-    client.once(eventName, async (arg) => {
+    client.on(eventName, async (arg) => {
       try {
         console.log(`Event triggered: ${eventName}`); // Debug: Event trigger
         for (const eventFile of eventFiles) {

@@ -1,6 +1,6 @@
 const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js');
 
-module.exports = {
+command = {
   name: 'ban',
   description: 'u dont wanna try :3',
   devOnly: false,
@@ -23,3 +23,4 @@ module.exports = {
     interaction.reply('Pong 🏓');
   },
 };
+module.exports=command

@@ -1,7 +1,7 @@
-const { testServer } = require('./../../../config.json');
-const getLocalCommands = require('../../utils/getLocalCommands');
-const getApplicationCommands = require('../../utils/getApplicationCommands');
-const areCommandsDifferent = require('../../utils/areCommandsDifferent');
+const { testServer } = require("./../../../config.json");
+const getLocalCommands = require("../../utils/getLocalCommands");
+const getApplicationCommands = require("../../utils/getApplicationCommands");
+const areCommandsDifferent = require("../../utils/areCommandsDifferent");
 // module.exports = async (client) => {
 //     try {
 //         const localCommands = getLocalCommands();
@@ -40,7 +40,10 @@ const areCommandsDifferent = require('../../utils/areCommandsDifferent');
 module.exports = async (client) => {
   try {
     const localCommands = getLocalCommands();
-    const applicationCommands = await getApplicationCommands(client, testServer);
+    const applicationCommands = await getApplicationCommands(
+      client,
+      testServer
+    );
     for (const localCommand of localCommands) {
       const { name, description, options } = localCommand;
       const existingCommand = await applicationCommands.cache.find(
@@ -65,9 +68,9 @@ module.exports = async (client) => {
           continue;
         }
         await applicationCommands.create({
-          name,
-          description,
-          options,
+          name:command.name,
+          description:command.description,
+          options:command.options,
         });
         console.log(`created Command ${name}`);
       }
