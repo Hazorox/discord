@@ -68,9 +68,9 @@ module.exports = async (client) => {
           continue;
         }
         await applicationCommands.create({
-          name:command.name,
-          description:command.description,
-          options:command.options,
+          name: command.name,
+          description: command.description,
+          options: command.options,
         });
         console.log(`created Command ${name}`);
       }
