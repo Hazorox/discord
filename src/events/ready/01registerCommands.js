@@ -1,81 +1,46 @@
 const { testServer } = require("./../../../config.json");
-const getLocalCommands = require("../../utils/getLocalCommands");
+const getLocalCommands = require("./../../utils/getLocalCommands");
 const getApplicationCommands = require("../../utils/getApplicationCommands");
 const areCommandsDifferent = require("../../utils/areCommandsDifferent");
-// module.exports = async (client) => {
-//     try {
-//         const localCommands = getLocalCommands();
-//         const applicationCommands = getApplicationCommands(client, testServer);
-//         for (const localCommand of localCommands) {
-//             const { name, description, options } = localCommand;
-//             const existingCommand = await applicationCommands.cache.find((cmd) => cmd.name === name);
-//             if (existingCommand) {
-//                 if (localCommand.deleted) {
-//                     await applicationCommands.delete(existingCommand.id);
-//                     console.log(`deleted Command ${name}`);
-//                     continue;
-//                 }
-//                 if(areCommandsDifferent(existingCommand,localCommand)){
-//                     await applicationCommands.edit(existingCommand.id, {
-//                         description,options,
-//                     });
-//                     console.log(`updated Command ${name}`);
-//                 }
-//             } else {
-//                 if(localCommand.deleted){
-//                     console.log(`skipped Command ${name}`);
-//                     continue
-//         }await applicationCommands.create({
-//                     name,
-//                     description,
-//                     options,
-//                 });
-//                 console.log(`created Command ${name}`);
-//             }
-//     }}
-//     } catch (err) {
-//         console.error(err);
-//     }
-// };
+
 module.exports = async (client) => {
   try {
     const localCommands = getLocalCommands();
-    const applicationCommands = await getApplicationCommands(
-      client,
-      testServer
-    );
+    const applicationCommands = await getApplicationCommands(client, testServer);
+
     for (const localCommand of localCommands) {
       const { name, description, options } = localCommand;
-      const existingCommand = await applicationCommands.cache.find(
-        (cmd) => cmd.name === name
-      );
+      const existingCommand = applicationCommands.cache.find((cmd) => cmd.name === name);
+
       if (existingCommand) {
         if (localCommand.deleted) {
           await applicationCommands.delete(existingCommand.id);
-          console.log(`deleted Command ${name}`);
+          console.log(`Deleted command ${name}`);
           continue;
         }
+
         if (areCommandsDifferent(existingCommand, localCommand)) {
           await applicationCommands.edit(existingCommand.id, {
             description,
             options,
           });
-          console.log(`updated Command ${name}`);
+          console.log(`Updated command ${name}`);
         }
       } else {
         if (localCommand.deleted) {
-          console.log(`skipped Command ${name}`);
+          console.log(`Skipped command ${name}`);
           continue;
         }
+
         await applicationCommands.create({
-          name: command.name,
-          description: command.description,
-          options: command.options,
+          name,
+          description,
+          options,
         });
-        console.log(`created Command ${name}`);
+        console.log(`Created command ${name}`);
       }
     }
   } catch (err) {
-    console.error(err);
+    console.error("Error processing commands:", err);
   }
 };

@@ -1,5 +1,5 @@
 const path = require('path');
-const getAllFiles = require('../utils/getAllFiles');
+const getAllFiles = require('./../utils/getAllFiles');
 
 module.exports = (client) => {
   const eventFolders = getAllFiles(path.join(__dirname, '..', 'events'), true);
@@ -11,16 +11,9 @@ module.exports = (client) => {
     const eventName = eventFolder.replace(/\\/g, '/').split('/').pop();
 
     client.on(eventName, async (arg) => {
-      try {
-        console.log(`Event triggered: ${eventName}`); // Debug: Event trigger
-        for (const eventFile of eventFiles) {
-          const eventFilePath = path.resolve(eventFile);
-          console.log(`Executing file: ${eventFilePath}`); // Debug: Executing file
-          const eventFunction = require(eventFilePath);
-          await eventFunction(client, arg);
-        }
-      } catch (error) {
-        console.error(`Error in event function for event: ${eventName}`, error);
+      for (const eventFile of eventFiles) {
+        const eventFunction = require(eventFile);
+        await eventFunction(client, arg);
       }
     });
   }

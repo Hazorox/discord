@@ -50,10 +50,7 @@ client.on("interactionCreate", async (interaction) => {
       // Code to execute for the 'hello' command
       await interaction.reply("Hello World!");
       break;
-    case "ping":
-      // Code to execute for the 'ping' command
-      await interaction.reply("pong 🏓");
-      break;
+    
     case "addition":
       // Code to execute for the 'addition' command
       const firstNumber = interaction.options.getNumber("first_number");
@@ -81,10 +78,7 @@ client.on("interactionCreate", async (interaction) => {
         console.log(err);
       }
       break;
-    default:
-      // Default case if the command name doesn't match any specific case
-      await interaction.reply("Unknown command");
-      break;
+    default:break;
   }
 });
 
