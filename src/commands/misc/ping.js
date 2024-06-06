@@ -13,3 +13,4 @@ module.exports = {
     interaction.reply(`Pong ${ping}!|||| ${client.ws.ping}ms`);
   },
 };
+module.exports=command
