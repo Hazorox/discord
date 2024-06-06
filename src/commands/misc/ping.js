@@ -6,7 +6,10 @@ module.exports = {
   // options: Object[],
   // deleted: Boolean,
 
-  callback: (client, interaction) => {
-    interaction.reply(`Pong! ${client.ws.ping}ms`);
+  callback:  (client, interaction) => {
+    
+    // const reply=await interaction.fetchReply()
+    // const ping=reply.createdTimestamp-interaction.createdTimestamp
+    interaction.reply(`Pong ${ping}!|||| ${client.ws.ping}ms`);
   },
 };
