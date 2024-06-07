@@ -53,21 +53,17 @@ module.exports = {
     let durationInt = parseInt(duration);
     let durationString = "seconds";
 
-    if (duration.includes("d")) {
+    if (duration.endsWith("d")) {
       durationInt *= 86400;
-      durationString = "hours";
-    }
-
-    if (duration.includes("h")) {
+      durationString = "seconds";
+    } else if (duration.endsWith("h")) {
       durationInt *= 3600;
-      durationString = "minutes";
-    }
-
-    if (duration.includes("m")) {
+      durationString = "seconds";
+    } else if (duration.endsWith("m")) {
       durationInt *= 60;
       durationString = "seconds";
     } else {
-      await interaction.deferReply({ ephemeral: true });
+      // await interaction.deferReply({ ephemeral: true });
       await interaction.editReply(
         "Invalid duration format. Please use the format: 30m, 1h, 1d."
       );
@@ -76,12 +72,15 @@ module.exports = {
 
     duration = `${durationInt} ${durationString}`;
     try {
-      await targetUser.timeout(durationInt, reason);
+      await targetUser.timeout(durationInt * 1000, reason);
       await interaction.editReply(
         `User ${targetUser} was timed out for ${duration} .`
       );
     } catch (err) {
-      interaction.editReply({content:"Something went wrong.\nCan't Mute the user",ephemeral:true});
+      interaction.editReply({
+        content: "Something went wrong.\nCan't Mute the user",
+        ephemeral: true,
+      });
     }
   },
 
