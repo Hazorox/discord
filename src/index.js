@@ -1,6 +1,12 @@
-const { Client, IntentsBitField, EmbedBuilder, ActivityType } = require("discord.js");
+const {
+  Client,
+  IntentsBitField,
+  EmbedBuilder,
+  ActivityType,
+} = require("discord.js");
 const eventHandler = require("./handlers/eventHandler");
 require("dotenv").config();
+const mongoose = require("mongoose");
 const client = new Client({
   intents: [
     IntentsBitField.Flags.Guilds,
@@ -10,35 +16,47 @@ const client = new Client({
   ],
 });
 
+(async () => {
+  try {
+    mongoose.set("strictQuery", false);
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("MongoDB connected");
+    eventHandler(client);
+  } catch (err) {
+    console.log(err);
+  }
+})();
+// eventHandler(client);
 
-eventHandler(client)
 client.login(process.env.TOKEN);
 
-
-
-
-
-client.on('interactionCreate', async (interaction) => {
+client.on("interactionCreate", async (interaction) => {
   try {
     if (!interaction.isButton()) return;
-  await interaction.deferReply({ephemeral: true});
-  const role = interaction.guild.roles.cache.get(interaction.customId);
-  if (!role) {
-    interaction.editReply({content:'Role not found'  }); // This should never happen
-return;
-  }
-  const hasRole=interaction.member.roles.cache.has(role.id)
-  if (hasRole){
-    await interaction.member.roles.remove(role.id);
-    await interaction.editReply({content:`Removed ${role.name}`,ephemeral:true  });
-    return;
-  }
-  await interaction.member.roles.add(role.id);
-  await interaction.editReply({content:`Added ${role.name}`,ephemeral:true  });
+    await interaction.deferReply({ ephemeral: true });
+    const role = interaction.guild.roles.cache.get(interaction.customId);
+    if (!role) {
+      interaction.editReply({ content: "Role not found" }); // This should never happen
+      return;
+    }
+    const hasRole = interaction.member.roles.cache.has(role.id);
+    if (hasRole) {
+      await interaction.member.roles.remove(role.id);
+      await interaction.editReply({
+        content: `Removed ${role.name}`,
+        ephemeral: true,
+      });
+      return;
+    }
+    await interaction.member.roles.add(role.id);
+    await interaction.editReply({
+      content: `Added ${role.name}`,
+      ephemeral: true,
+    });
   } catch (err) {
-    console.error(err)
+    console.error(err);
   }
-  })
+});
 
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
@@ -50,7 +68,7 @@ client.on("interactionCreate", async (interaction) => {
       // Code to execute for the 'hello' command
       await interaction.reply("Hello World!");
       break;
-    
+
     case "addition":
       // Code to execute for the 'addition' command
       const firstNumber = interaction.options.getNumber("first_number");
@@ -78,12 +96,16 @@ client.on("interactionCreate", async (interaction) => {
         console.log(err);
       }
       break;
-    default:break;
+    default:
+      break;
   }
 });
 
 client.on("messageCreate", function (message) {
-  if (message.content.toUpperCase().includes("SON")  && message.author.bot == false) {
+  if (
+    message.content.toUpperCase().includes("SON") &&
+    message.author.bot == false
+  ) {
     message.reply("Father?");
   } else if (
     message.content.toUpperCase().includes("CAT") &&
