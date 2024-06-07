@@ -81,7 +81,7 @@ module.exports = {
         `User ${targetUser} was timed out for ${duration} .`
       );
     } catch (err) {
-      console.log(err);
+      interaction.editReply({content:"Something went wrong.\nCan't Mute the user",ephemeral:true});
     }
   },
 
