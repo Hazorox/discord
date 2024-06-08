@@ -74,7 +74,7 @@ module.exports = {
     try {
       await targetUser.timeout(durationInt * 1000, reason);
       await interaction.editReply(
-        `User ${targetUser} was timed out for ${duration} .`
+        `User ${targetUser} was timed out for ${duration}\nReason: ${reason} .`
       );
     } catch (err) {
       interaction.editReply({

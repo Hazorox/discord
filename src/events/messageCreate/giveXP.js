@@ -63,6 +63,6 @@ module.exports = async (client, message) => {
       }, 60000);
     }
   } catch (error) {
-    console.log(`Error giving xp: ${error}`);
+    console.log(`Error giving xp : ${error}`);
   }
 };

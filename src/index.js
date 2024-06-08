@@ -4,6 +4,7 @@ const {
   EmbedBuilder,
   ActivityType,
 } = require("discord.js");
+
 const eventHandler = require("./handlers/eventHandler");
 require("dotenv").config();
 const mongoose = require("mongoose");
@@ -13,6 +14,7 @@ const client = new Client({
     IntentsBitField.Flags.GuildMembers,
     IntentsBitField.Flags.GuildMessages,
     IntentsBitField.Flags.MessageContent,
+    IntentsBitField.Flags.GuildPresences,
   ],
 });
 
@@ -29,6 +31,10 @@ const client = new Client({
 // eventHandler(client);
 
 client.login(process.env.TOKEN);
+client.on('guildCreate', (guild) => {
+  console.log(`Joined a new server: ${guild.name} (${guild.id})`);
+  eventHandler(client);
+});
 
 client.on("interactionCreate", async (interaction) => {
   try {
