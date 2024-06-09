@@ -4,7 +4,7 @@ const {
   ApplicationCommandOptionType,
   AttachmentBuilder,
 } = require("discord.js");
-const Level = require("./../../models/level");
+const Level = require("../../models/level");
 const canvacord = require("canvacord");
 const calcXP = require("../../utils/calcXP");
 module.exports = {
@@ -30,12 +30,18 @@ module.exports = {
       userId: targetMember.id,
       guildId: interaction.guild.id,
     });
+
     if (!fetchedLevel) {
       await interaction.editReply(
         targetMember
-          ? `${targetMember.user.tag} doesn't have any levels yet. Try again when they chat a little more.`
+          ? `${targetMember.user.displayName} doesn't have any levels yet. Try again when they chat a little more.`
           : "You don't have any levels yet. Chat a little more and try again."
       );
+      if (targetMember.user.bot) {
+        await interaction.editReply(
+          "This user doesnt have any levels because they are a bot"
+        );
+      }
       return;
     }
 
@@ -55,11 +61,11 @@ module.exports = {
     );
     const rank = new canvacord.Rank()
       .setAvatar(targetMember.user.displayAvatarURL({ size: 256 }))
-      .setRank(currentRank+1)
+      .setRank(currentRank + 1)
       .setLevel(fetchedLevel.level)
       .setCurrentXP(fetchedLevel.xp)
       .setRequiredXP(calcXP(fetchedLevel.level))
-      .setStatus(targetMember.presence.status||"online")
+      .setStatus(targetMember.presence.status || "online")
       .setProgressBar("#FFC300", "COLOR")
       .setUsername(targetMember.user.username)
       .setDiscriminator(targetMember.user.discriminator);
