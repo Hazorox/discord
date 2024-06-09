@@ -9,7 +9,7 @@ module.exports = {
    */
   callback: async (client, interaction) => {
     if (!interaction.inGuild()) {
-      interaction.reply({
+      await interaction.reply({
         content: "This command can only be used in servers.",
         ephemeral: true,
       });
@@ -51,7 +51,7 @@ module.exports = {
 
         user.lastDaily = new Date();
       } else {
-        user = new User({
+        user =await  new User({
           ...query,
           lastDaily: new Date(),
         });
