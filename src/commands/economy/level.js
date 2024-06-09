@@ -59,13 +59,18 @@ module.exports = {
     let currentRank = allLevels.findIndex(
       (lvl) => lvl.userId === targetMember.id
     );
+    try {
+      status=targetMember.presence.status
+    } catch (err) {
+      status="offline"
+    }
     const rank = new canvacord.Rank()
       .setAvatar(targetMember.user.displayAvatarURL({ size: 256 }))
       .setRank(currentRank + 1)
       .setLevel(fetchedLevel.level)
       .setCurrentXP(fetchedLevel.xp)
       .setRequiredXP(calcXP(fetchedLevel.level))
-      .setStatus(targetMember.presence.status || "online")
+      .setStatus(status || "online")
       .setProgressBar("#FFC300", "COLOR")
       .setUsername(targetMember.user.username)
       .setDiscriminator(targetMember.user.discriminator);
