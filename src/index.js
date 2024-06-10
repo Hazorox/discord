@@ -29,7 +29,6 @@ const client = new Client({
   }
 })();
 // eventHandler(client);
-
 client.login(process.env.TOKEN);
 client.on('guildCreate', (guild) => {
   console.log(`Joined a new server: ${guild.name} (${guild.id})`);

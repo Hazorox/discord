@@ -59,11 +59,7 @@ module.exports = {
     let currentRank = allLevels.findIndex(
       (lvl) => lvl.userId === targetMember.id
     );
-    try {
-      status=targetMember.presence.status
-    } catch (err) {
-      status="offline"
-    }
+    const status = targetMember.presence.status||"offline"
     const rank = new canvacord.Rank()
       .setAvatar(targetMember.user.displayAvatarURL({ size: 256 }))
       .setRank(currentRank + 1)

@@ -10,12 +10,15 @@ module.exports = async (client) => {
 
     for (const localCommand of localCommands) {
       const { name, description, options } = localCommand;
-      const existingCommand = applicationCommands.cache.find((cmd) => cmd.name === name);
+
+      const existingCommand = await applicationCommands.cache.find(
+        (cmd) => cmd.name === name
+      );
 
       if (existingCommand) {
         if (localCommand.deleted) {
           await applicationCommands.delete(existingCommand.id);
-          console.log(`Deleted command ${name}`);
+          console.log(`🗑 Deleted command "${name}".`);
           continue;
         }
 
@@ -24,20 +27,8 @@ module.exports = async (client) => {
             description,
             options,
           });
-          console.log(`Updated command ${name}`);
+          console.log(`Created command ${name}`);
         }
-      } else {
-        if (localCommand.deleted) {
-          console.log(`Skipped command ${name}`);
-          continue;
-        }
-
-        await applicationCommands.create({
-          name,
-          description,
-          options,
-        });
-        console.log(`Created command ${name}`);
       }
     }
   } catch (err) {
