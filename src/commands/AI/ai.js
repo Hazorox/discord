@@ -53,7 +53,8 @@ module.exports = {
       return;
     }
     if (private) {
-      await interaction.user.send(text);
+      await interaction.user.send(text)
+      await interaction.deleteReply();
     } else {
       await interaction.editReply(text);
     }
