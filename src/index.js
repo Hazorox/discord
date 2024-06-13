@@ -1,10 +1,12 @@
+const path=require("path")
 const {
   Client,
   IntentsBitField,
   EmbedBuilder,
-  ActivityType,
+  // ActivityType,
 } = require("discord.js");
-
+// import {CommandHandler} from "djs-commander"
+const {CommandHandler} = require("djs-commander")
 const eventHandler = require("./handlers/eventHandler");
 require("dotenv").config();
 const mongoose = require("mongoose");
@@ -17,7 +19,12 @@ const client = new Client({
     IntentsBitField.Flags.GuildPresences,
   ],
 });
-
+new CommandHandler({
+  client,
+  commandsPath: path.join(__dirname, "commands"),
+  eventsPath: path.join(__dirname, "events"),
+  testServer:process.env.GUILD_ID
+})
 (async () => {
   try {
     mongoose.set("strictQuery", false);
