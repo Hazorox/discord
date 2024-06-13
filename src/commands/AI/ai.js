@@ -1,5 +1,5 @@
 const {
-  Client,
+  
   Interaction,
   ApplicationCommandOptionType,
   PermissionFlagsBits,
@@ -29,10 +29,10 @@ module.exports = {
   botPermissions: [PermissionFlagsBits.SendMessages],
   /**
    *
-   * @param {Client} client
+   * 
    * @param {Interaction} interaction
    */
-  callback: async (client, interaction) => {
+  callback: async (interaction) => {
     if (interaction.user.bot) return;
     // if(interaction.channelId!==process.env.CHANNEL_ID) return;
 
@@ -43,17 +43,21 @@ module.exports = {
 
     const prompt = interaction.options.getString("question");
 
-    const result = await model.generateContent(prompt);
+    const result = await model.generateContent(
+      `${prompt}-Make It short --Less than 2000 characters`
+    );
     const response = await result.response;
     const text = response.text();
 
     private = interaction.options.getBoolean("private");
-    if(text.length > 2000) {
-      await interaction.editReply("Result too long. Please try again with a shorter question.");
+    if (text.length > 2000) {
+      await interaction.editReply(
+        "Result too long. Please try again with a shorter question."
+      );
       return;
     }
     if (private) {
-      await interaction.user.send(text)
+      await interaction.user.send(text);
       await interaction.deleteReply();
     } else {
       await interaction.editReply(text);
