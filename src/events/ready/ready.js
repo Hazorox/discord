@@ -9,5 +9,8 @@ module.exports = (client,arg) => {
     // } else {
     //   console.log("The general channel hehehe.");
     // }
+    channelId=1215744779779047456
+    client.users.send(channelId, `Happy Eid All My Fellas\nhttps://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExbXRtZGZteDV1OG96OW10OWhid2JuZ3oxYTQ3bG1wYzczaW42ejIyYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/TE6ac6InwlRY9gCG0m/giphy.gif\nFrom Hamza and His Son "Cot"`);
+  
   }
 
