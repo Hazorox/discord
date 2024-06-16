@@ -145,7 +145,7 @@ module.exports = {
         .setRequired(true)
     ),
   permissionsRequired: [PermissionFlagsBits.Administrator],
-  botPermissions: [PermissionFlagsBits.ManageRoles],
+  botPermissions: [PermissionFlagsBits.Administrator],
 
   /**
    * 
