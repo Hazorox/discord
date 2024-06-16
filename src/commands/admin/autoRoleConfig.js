@@ -132,16 +132,27 @@
 //   permissionsRequired: [PermissionFlagsBits.Administrator],
 //   botPermissions: [PermissionFlagsBits.ManageRoles],
 // };
+const { Client, Interaction, SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 const AutoRoles = require("../../models/autoRoles");
-const { Client, Interaction, ApplicationCommandOptionType, PermissionFlagsBits } = require("discord.js");
 
 module.exports = {
+  data: new SlashCommandBuilder()
+    .setName("autorole-configure")
+    .setDescription("Configure your auto-role for this server.")
+    .addRoleOption(option => 
+      option.setName("role")
+        .setDescription("The role you want users to get on join.")
+        .setRequired(true)
+    ),
+  permissionsRequired: [PermissionFlagsBits.Administrator],
+  botPermissions: [PermissionFlagsBits.ManageRoles],
+
   /**
    * 
    * @param {Client} client 
    * @param {Interaction} interaction 
    */
-  callback: async (client, interaction) => {
+  run: async ({client, interaction}) => {
     if (!interaction.inGuild()) {
       await interaction.reply({
         content: "This command can only be used in servers.",
@@ -152,7 +163,7 @@ module.exports = {
 
     try {
       await interaction.deferReply();
-      const roleId = interaction.options.getRole("role").id; // Correctly access the role ID
+      const roleId = interaction.options.getRole("role").id;
       let autoRole = await AutoRoles.findOne({ guildId: interaction.guild.id });
 
       if (autoRole) {
@@ -174,17 +185,5 @@ module.exports = {
       console.error("Error executing autorole-configure command: ", err);
       await interaction.editReply("An error occurred while configuring the autorole.");
     }
-  },
-  name: "autorole-configure",
-  description: "Configure your auto-role for this server.",
-  options: [
-    {
-      name: "role",
-      description: "The role you want users to get on join.",
-      type: ApplicationCommandOptionType.Role,
-      required: true,
-    },
-  ],
-  permissionsRequired: [PermissionFlagsBits.Administrator],
-  botPermissions: [PermissionFlagsBits.ManageRoles],
+  }
 };

@@ -1,82 +1,65 @@
-const {
-  Client,
-  Interaction,
-  ApplicationCommandOptionType,
-  PermissionFlagsBits,
-} = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits, ApplicationCommandOptionType } = require("discord.js");
 
 module.exports = {
-  /**
-   *
-   * @param {Client} client
-   * @param {Interaction} interaction
-   */
+  data: new SlashCommandBuilder()
+    .setName("kick")
+    .setDescription("Kicks a member from this server.")
+    .addMentionableOption(option =>
+      option.setName("target-user")
+        .setDescription("The user you want to kick.")
+        .setRequired(true)
+    )
+    .addStringOption(option =>
+      option.setName("reason")
+        .setDescription("The reason you want to kick.")
+        .setRequired(false)
+    ),
+  permissionsRequired: [PermissionFlagsBits.KickMembers],
+  botPermissions: [PermissionFlagsBits.KickMembers],
 
-  callback: async (client, interaction) => {
-    const targetUserId = interaction.options.get("target-user").value;
-    const reason =
-      interaction.options.get("reason")?.value || "No reason provided";
+  /**
+   * 
+   * @param {Client} client 
+   * @param {Interaction} interaction 
+   */
+  run: async ({client, interaction}) => {
+    const targetUserId = interaction.options.getMentionable("target-user").id;
+    const reason = interaction.options.getString("reason") || "No reason provided";
 
     await interaction.deferReply();
 
-    const targetUser = await interaction.guild.members.fetch(targetUserId);
-
-    if (!targetUser) {
-      await interaction.editReply("That user doesn't exist in this server.");
-      return;
-    }
-
-    if (targetUser.id === interaction.guild.ownerId) {
-      await interaction.editReply(
-        "You can't kick that user because they're the server owner."
-      );
-      return;
-    }
-
-    const targetUserRolePosition = targetUser.roles.highest.position; // Highest role of the target user
-    const requestUserRolePosition = interaction.member.roles.highest.position; // Highest role of the user running the cmd
-    const botRolePosition = interaction.guild.members.me.roles.highest.position; // Highest role of the bot
-
-    if (targetUserRolePosition >= requestUserRolePosition) {
-      await interaction.editReply(
-        "You can't kick that user because they have the same/higher role than you."
-      );
-      return;
-    }
-
-    if (targetUserRolePosition >= botRolePosition) {
-      await interaction.editReply(
-        "I can't kick that user because they have the same/higher role than me."
-      );
-      return;
-    }
-
-    // kick the targetUser
     try {
-      await targetUser.kick({ reason });
-      await interaction.editReply(
-        `User ${targetUser} was kicked\nReason: ${reason}`
-      );
-    } catch (error) {
-      console.log(`There was an error when kicking: ${error}`);
-    }
-  },
+      const targetUser = await interaction.guild.members.fetch(targetUserId);
 
-  name: "kick",
-  description: "kicks a member from this server.",
-  options: [
-    {
-      name: "target-user",
-      description: "The user you want to kick.",
-      type: ApplicationCommandOptionType.Mentionable,
-      required: true,
-    },
-    {
-      name: "reason",
-      description: "The reason you want to kick.",
-      type: ApplicationCommandOptionType.String,
-    },
-  ],
-  permissionsRequired: [PermissionFlagsBits.KickMembers],
-  botPermissions: [PermissionFlagsBits.KickMembers],
+      if (!targetUser) {
+        await interaction.editReply("That user doesn't exist in this server.");
+        return;
+      }
+
+      if (targetUser.id === interaction.guild.ownerId) {
+        await interaction.editReply("You can't kick that user because they're the server owner.");
+        return;
+      }
+      const botMember = interaction.guild.members.cache.get(interaction.client.user.id);
+      const targetUserRolePosition = member.roles.highest.position;
+      const requestUserRolePosition = interaction.member.roles.highest.position;
+      const botRolePosition = botMember.roles.highest.position;
+      if (targetUserRolePosition >= requestUserRolePosition) {
+        await interaction.editReply("You can't kick that user because they have the same or higher role than you.");
+        return;
+      }
+
+      if (targetUserRolePosition >= botRolePosition) {
+        await interaction.editReply("I can't kick that user because they have the same or higher role than me.");
+        return;
+      }
+
+      // Kick the targetUser
+      await targetUser.kick(reason);
+      await interaction.editReply(`User ${targetUser.user.tag} was kicked.\nReason: ${reason}`);
+    } catch (error) {
+      console.error(`There was an error when kicking: ${error}`);
+      await interaction.editReply("There was an error when kicking the user.");
+    }
+  }
 };

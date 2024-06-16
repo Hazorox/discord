@@ -7,9 +7,20 @@ const {
 } = require("discord.js");
 // import {CommandHandler} from "djs-commander"
 // const {CommandHandler} = require("djs-commander")
-const eventHandler = require("./handlers/eventHandler");
+const {CommandKit}=require('commandkit')
+// const eventHandler = require("./handlers/eventHandler");
 require("dotenv").config();
 const mongoose = require("mongoose");
+(async () => {
+  try {
+    mongoose.set('strictQuery', false);
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log('MongoDB connected');
+    // eventHandler(client);
+  } catch (err) {
+    console.error(err);
+  }
+})();
 const client = new Client({
   intents: [
     IntentsBitField.Flags.Guilds,
@@ -19,22 +30,15 @@ const client = new Client({
     IntentsBitField.Flags.GuildPresences,
   ],
 });
-// new CommandHandler({
-//   client,
-//   commandsPath: path.join(__dirname, "commands"),
-//   eventsPath: path.join(__dirname, "events"),
-//   testServer:process.env.GUILD_ID
-// })
-(async () => {
-  try {
-    mongoose.set("strictQuery", false);
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log("MongoDB connected");
-    eventHandler(client);
-  } catch (err) {
-    console.log(err);
-  }
-})();
+
+new CommandKit({
+  client,
+  commandsPath: path.join(__dirname, "commands"),
+  eventsPath:path.join(__dirname, "events"),
+  devUserIds:['689105021413228652']
+  
+})
+
 // eventHandler(client);
 client.login(process.env.TOKEN);
 client.on('guildCreate', (guild) => {
