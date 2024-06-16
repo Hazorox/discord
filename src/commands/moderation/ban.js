@@ -41,7 +41,7 @@ module.exports = {
         return;
       }
       const botMember = interaction.guild.members.cache.get(interaction.client.user.id);
-      const targetUserRolePosition = member.roles.highest.position;
+      const targetUserRolePosition = targetUser.roles.highest.position;
       const requestUserRolePosition = interaction.member.roles.highest.position;
       const botRolePosition = botMember.roles.highest.position;
 

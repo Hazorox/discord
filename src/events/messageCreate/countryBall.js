@@ -1,16 +1,16 @@
-// const {Client,Message}=require('discord.js')
+const {Client,Message}=require('discord.js')
 
-// /**
-//  * @param {Client} client
-//  * @param {Message} message
-//  */
-// module.exports=async(client,message)=>{
-//     try{if(message.author.bot
-//         &&message.content.includes('appeared')){
-//         client.users.send('689105021413228652', 'A COUWNTY BALL APPEARED FATHER GO CATCH IT FAST\nUwU\nhttps://giphy.com/gifs/party-raccoon-racoon-ZJPSFNLmADueHvzoZ8');
-//     }}catch(e){
-//         console.log(e)
+/**
+ * @param {Client} client
+ * @param {Message} message
+ */
+module.exports=async(message,client)=>{
+    try{if(message.author.bot
+        &&message.content.includes('appeared')){
+        client.users.send('689105021413228652', 'A COUWNTY BALL APPEARED FATHER GO CATCH IT FAST\nUwU\nhttps://giphy.com/gifs/party-raccoon-racoon-ZJPSFNLmADueHvzoZ8');
+    }}catch(e){
+        console.log(e)
         
-//     }
+    }
     
-// }
+}
