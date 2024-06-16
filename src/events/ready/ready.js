@@ -18,5 +18,5 @@ module.exports = (client,arg) => {
     //   console.log("The general channel hehehe.");
     // }
     
-  }
+  } 
 
