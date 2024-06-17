@@ -198,7 +198,7 @@ module.exports = {
     }
   },
   options: {
-    devOnly: true,
+    // devOnly: true,
     userPermissions: ["Administrator"],
     botPermissions: ["Administrator"],
     deleted: false,

@@ -1,9 +1,9 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits, cooldowns } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("ping")
-    .setDescription("Replies with the bot ping!"),
+    .setDescription("Replies with the bot ping"),
   permissionsRequired: [PermissionFlagsBits.SendMessages],
   botPermissions: [PermissionFlagsBits.SendMessages],
 
@@ -20,7 +20,7 @@ module.exports = {
     const ping = reply.createdTimestamp - interaction.createdTimestamp;
 
     await interaction.editReply(
-      `Pong! Client ${ping}ms | Websocket: ${client.ws.ping}ms`
+      `Pong Client ${ping}ms | Websocket: ${client.ws.ping}ms.`
     );
-  }
+  },
 };

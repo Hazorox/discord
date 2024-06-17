@@ -37,6 +37,7 @@ new CommandKit({
   eventsPath: path.join(__dirname, "events"),
   devUserIds: ["689105021413228652"],
   devGuildIds: ["1203741443080978503"],
+  validationsPath: path.join(__dirname, "validations"),
 });
 
 // eventHandler(client);
