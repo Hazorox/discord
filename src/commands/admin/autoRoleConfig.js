@@ -132,27 +132,32 @@
 //   permissionsRequired: [PermissionFlagsBits.Administrator],
 //   botPermissions: [PermissionFlagsBits.ManageRoles],
 // };
-const { Client, Interaction, SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
+const {
+  Client,
+  Interaction,
+  SlashCommandBuilder,
+  PermissionFlagsBits,
+  Options,
+} = require("discord.js");
 const AutoRoles = require("../../models/autoRoles");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("autorole-configure")
+    .setName("autorole")
     .setDescription("Configure your auto-role for this server.")
-    .addRoleOption(option => 
-      option.setName("role")
+    .addRoleOption((option) =>
+      option
+        .setName("role")
         .setDescription("The role you want users to get on join.")
         .setRequired(true)
     ),
-  permissionsRequired: [PermissionFlagsBits.Administrator],
-  botPermissions: [PermissionFlagsBits.Administrator],
 
   /**
-   * 
-   * @param {Client} client 
-   * @param {Interaction} interaction 
+   *
+   * @param {Client} client
+   * @param {Interaction} interaction
    */
-  run: async ({client, interaction}) => {
+  run: async ({ client, interaction }) => {
     if (!interaction.inGuild()) {
       await interaction.reply({
         content: "This command can only be used in servers.",
@@ -168,7 +173,9 @@ module.exports = {
 
       if (autoRole) {
         if (autoRole.roleId === roleId) {
-          await interaction.editReply("Auto role has already been configured for that role. To disable, run `/autorole-disable`.");
+          await interaction.editReply(
+            "Auto role has already been configured for that role. To disable, run `/autorole-disable`."
+          );
           return;
         }
         autoRole.roleId = roleId;
@@ -180,10 +187,20 @@ module.exports = {
       }
 
       await autoRole.save();
-      await interaction.editReply("Autorole has now been configured. To disable, run `/autorole-disable`.");
+      await interaction.editReply(
+        "Autorole has now been configured. To disable, run `/autorole-disable`."
+      );
     } catch (err) {
       console.error("Error executing autorole-configure command: ", err);
-      await interaction.editReply("An error occurred while configuring the autorole.");
+      await interaction.editReply(
+        "An error occurred while configuring the autorole."
+      );
     }
-  }
+  },
+  options: {
+    devOnly: true,
+    userPermissions: ["Administrator"],
+    botPermissions: ["Administrator"],
+    deleted: false,
+  },
 };

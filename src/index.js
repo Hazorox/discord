@@ -1,4 +1,4 @@
-const path=require("path")
+const path = require("path");
 const {
   Client,
   IntentsBitField,
@@ -7,15 +7,15 @@ const {
 } = require("discord.js");
 // import {CommandHandler} from "djs-commander"
 // const {CommandHandler} = require("djs-commander")
-const {CommandKit}=require('commandkit')
+const { CommandKit } = require("commandkit");
 // const eventHandler = require("./handlers/eventHandler");
 require("dotenv").config();
 const mongoose = require("mongoose");
 (async () => {
   try {
-    mongoose.set('strictQuery', false);
+    mongoose.set("strictQuery", false);
     await mongoose.connect(process.env.MONGO_URI);
-    console.log('MongoDB connected');
+    console.log("MongoDB connected");
     // eventHandler(client);
   } catch (err) {
     console.error(err);
@@ -34,14 +34,14 @@ const client = new Client({
 new CommandKit({
   client,
   commandsPath: path.join(__dirname, "commands"),
-  eventsPath:path.join(__dirname, "events"),
-  devUserIds:['689105021413228652']
-  
-})
+  eventsPath: path.join(__dirname, "events"),
+  devUserIds: ["689105021413228652"],
+  devGuildIds: ["1203741443080978503"],
+});
 
 // eventHandler(client);
 client.login(process.env.TOKEN);
-client.on('guildCreate', (guild) => {
+client.on("guildCreate", (guild) => {
   console.log(`Joined a new server: ${guild.name} (${guild.id})`);
   // eventHandler(client);
 });
