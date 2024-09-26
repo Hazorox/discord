@@ -1,3 +1,4 @@
+//TODO: Fix the 'Role not found.' issue
 const {
   SlashCommandBuilder,
   EmbedBuilder,
@@ -5,9 +6,8 @@ const {
   PermissionFlagsBits,
   ButtonBuilder,
   ActionRowBuilder,
-  ActionRow,
+  
 } = require("discord.js");
-const timeout = require("../moderation/timeout");
 const choices = [
   {
     name: "rock",
@@ -25,21 +25,22 @@ const choices = [
     beats: "rock",
   },
 ];
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("rps")
     .setDescription("Play Rock Paper Scissors a friend!")
     .setDMPermission(false)
-    .addMentionableOption((option) =>
+    .addUserOption((option) =>
       option
         .setName("target-user")
         .setDescription("The user you want to play with!.")
         .setRequired(true)
     ),
+    
 
   permissionsRequired: [PermissionFlagsBits.SendMessages],
   botPermissions: [PermissionFlagsBits.SendMessages],
-  devOnly: true,
   /**
    *
    * @param {Object} param0
@@ -49,8 +50,10 @@ module.exports = {
    */
   run: async ({ interaction }) => {
     try {
-      const target = interaction.options.getMentionable("target-user").user;
+      const target = interaction.options.getUser("target-user");
       const user = interaction.user;
+      let targetChoice;
+      let userChoice;
       if (target.bot) {
         await interaction.reply({
           content: "You can't play with bots!",
@@ -65,7 +68,7 @@ module.exports = {
       const embed = new EmbedBuilder()
         .setColor("#46377a")
         .setTitle("Rock Paper Scissors")
-        .setDescription(`It's currently ${target}'s turn.`)
+        .setDescription(`Waiting for both players to choose...`)
         .setTimestamp(new Date());
 
       const buttons = choices.map((choice) => {
@@ -77,62 +80,79 @@ module.exports = {
       });
       const row = new ActionRowBuilder().addComponents(buttons);
       const reply = await interaction.reply({
-        content: `${target} ,you have been challenged to a rock paper scissors by ${interaction.user}`,
+        content: `${target} ,you have been challenged to a rock paper scissors by ${user}`,
         embeds: [embed],
         components: [row],
       });
-      const targetInteraction = await reply
-        .awaitMessageComponent({
-          timeout: 30000,
-          filter: (i) => i.user.id === target.id,
-        })
-        .catch(async (err) => {
-          embed.setDescription(`Game Over. ${target} didn't respond`);
-          await reply.edit({ embeds: [embed], components: [] });
-          return;
-        });
-        if (!targetInteraction) return;
-        const targetUserChoice = choices.find(
-            (choice)=>choice.name === targetInteraction.customId
-        )
-        await targetInteraction.reply({
-            content:`You picked ${targetUserChoice.name}${targetUserChoice.emoji}`,
-            ephemeral:true
+      
+      const targetCollector =  reply.createMessageComponentCollector({
+        time:50_000,
+        filter: (i) => i.user.id === target.id,
+      })
+      // Collect target Choice
+      targetCollector.on('collect',async i =>{
+         targetChoice = choices.find((choice) => choice.name === i.customId);
+        await interaction.followUp({content: `You chose ${targetChoice.name,targetChoice.emoji}`,ephemeral: true})
+        targetCollector.stop()
+      })
+      targetCollector.on('end',async i=>{
+        if(i.size==0){
+      embed.setTitle('Game Over')
+        .setDescription(`${target} didn't respond :(`)
+        .setColor('Grey')
+        await interaction.editReply({embeds:[embed],components:[]})
+        return;}
+      })
+      // Collect user choice
+      const userCollector =  reply.createMessageComponentCollector({
+        time:50_000,
+        filter: (i) => i.user.id === user.id,
+      })
+      userCollector.on('collect',async i =>{
+         userChoice = choices.find((choice) => choice.name === i.customId);
+        await interaction.followUp({content: `You chose ${userChoice.name,userChoice.emoji}`,ephemeral: true})
+        userCollector.stop()
+      })
+      userCollector.on('end',async i=>{
+        if(i.size==0){
+      embed.setTitle('Game Over')
+      .setDescription(`${user} didn't respond :(`)
+      .setColor('Grey')
+        await interaction.editReply({embeds:[embed],components:[]})
+        return;}
+      })
+      // Check both choices and evaluate results
+      Promise.all([
+        new Promise(resolve => targetCollector.on('end', resolve)),
+        new Promise(resolve => userCollector.on('end', resolve))
+    ]).then(async () => {
+        console.log(`Target Choice:`, targetChoice);
+        console.log(`User Choice:`, userChoice);
+
+        if (!targetChoice || !userChoice) {
+            embed.setTitle('Game Over')
+                .setDescription(`${!targetChoice ? `${target}` : `${user}`} didn't respond :(`)
+                .setColor('Grey');
+            await interaction.editReply({ embeds: [embed], components: [] });
+            return;
         }
-        )
-        embed.setDescription(`It's currently ${interaction.user}'s turn.`);
-        await reply.edit({content:`${interaction.user}, it's your turn now to play.`,ephemeral:true,embeds:[embed]})
-        const mainUserInteraction = await reply
-        .awaitMessageComponent({
-          timeout: 30_000,
-          filter: (i) => i.user.id === interaction.user.id,
-        })
-        .catch(async (err) => {
-          embed.setDescription(`Game Over. ${interaction.user} didn't respond`);
-          await reply.edit({ embeds: [embed], components: [] });
-          return;
-        });
-        if (!mainUserInteraction) return;
-        const mainUserChoice = choices.find(
-            (choice)=>choice.name === mainUserInteraction.customId
-        )
-        await mainUserInteraction.reply({
-            content:`You picked ${mainUserChoice.name}${mainUserChoice.emoji}`,
-            ephemeral:true
+
+        // Evaluate results
+        if (userChoice.beats === targetChoice.name) {
+            embed.setTitle(`${user.displayName} Won!`)
+                .setDescription(`${target} chose ${targetChoice.name} ${targetChoice.emoji}\n${user} chose ${userChoice.name} ${userChoice.emoji}\nGGs :P`)
+                .setColor('Green');
+        } else if (targetChoice.beats === userChoice.name) {
+            embed.setTitle(`${target.displayName} Won!`)
+                .setDescription(`${target} chose ${targetChoice.name} ${targetChoice.emoji}\n${user} chose ${userChoice.name} ${userChoice.emoji}\nGGs :P`)
+                .setColor('Green');
+        } else {
+            embed.setTitle('Tie')
+                .setDescription(`Both players chose ${targetChoice.name} ${targetChoice.emoji}\nGGs :/`);
         }
-        )
-        let result;
-        if(targetUserChoice.beats===mainUserChoice.name){
-            result=`${targetUser} Wins!`
-        }
-        if(targetUserChoice.name===mainUserChoice.beats){
-            result=`${interaction.user} Wins!`
-        }
-        if(targetUserChoice.name===mainUserChoice.name){
-            result=`It's a tie!`
-        }
-        embed.setDescription(`${targetUser} picked ${targetUserChoice.name+targetUserChoice.emoji}\n${interaction.user} picked ${mainUserChoice.name+mainUserChoice.emoji}\n\n${result}`)
-        reply.edit({embeds:[embed],components:[]})
+        
+        await interaction.editReply({ embeds: [embed], components: [] });
+    });
     } catch (error) {
       console.log(`error with /rps ${error}`);
       console.error(error);
