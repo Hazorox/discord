@@ -15,7 +15,7 @@ const mongoose = require("mongoose");
   try {
     mongoose.set("strictQuery", false);
     await mongoose.connect(process.env.MONGO_URI);
-    console.log("MongoDB connected");
+    console.log("MongoDB connected :O");
     // eventHandler(client);
   } catch (err) {
     console.error(err);

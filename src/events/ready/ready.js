@@ -1,6 +1,6 @@
 const {ActivityType}=require("discord.js")
 module.exports = (client,arg) => {
-    console.log(`Logged in as ${client.user.tag}!`);
+    console.log(`Logged in as ${client.user.tag}! :)`);
 
     client.user.setActivity(" You", { type: ActivityType.Watching });
     // const user = client.users.cache.get("747177875236454550"); // Replace with the user's ID
