@@ -124,9 +124,7 @@ module.exports = {
         new Promise(resolve => targetCollector.on('end', resolve)),
         new Promise(resolve => userCollector.on('end', resolve))
     ]).then(async () => {
-        console.log(`Target Choice:`, targetChoice);
-        console.log(`User Choice:`, userChoice);
-
+        
         if (!targetChoice || !userChoice) {
             embed.setTitle('Game Over')
                 .setDescription(`${!targetChoice ? `${target}` : `${user}`} didn't respond :(`)
