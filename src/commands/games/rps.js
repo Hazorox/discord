@@ -92,7 +92,6 @@ module.exports = {
       // Collect target Choice
       targetCollector.on('collect',async i =>{
          targetChoice = choices.find((choice) => choice.name === i.customId);
-        await interaction.followUp({content: `You chose ${targetChoice.name,targetChoice.emoji}`,ephemeral: true})
         targetCollector.stop()
       })
       targetCollector.on('end',async i=>{
@@ -110,7 +109,6 @@ module.exports = {
       })
       userCollector.on('collect',async i =>{
          userChoice = choices.find((choice) => choice.name === i.customId);
-        await interaction.followUp({content: `You chose ${userChoice.name,userChoice.emoji}`,ephemeral: true})
         userCollector.stop()
       })
       userCollector.on('end',async i=>{
