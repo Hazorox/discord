@@ -23,7 +23,7 @@ const notificationConfigSchema = new Schema(
     },
     lastCheckedVid: {
       type: {
-        id: {
+        url: {
           type: String,
           required: true,
         },

@@ -48,7 +48,9 @@ const run = async ({ interaction }) => {
     const notificationChannel = interaction.options.getChannel(
       "notification-channel"
     );
-    const customMessage = interaction.options.getString("custom-message");
+    const customMessage =
+      interaction.options.getString("custom-message") ||
+      "YOOOOO IT WORKED AMIGO";
     const duplicateExists = await ytNotifications.exists({
       ytChannelId: targetYTChannel,
       notificationChannelId: notificationChannel.id,
@@ -69,29 +71,37 @@ const run = async ({ interaction }) => {
         );
         const vid = feed.items[0];
         const vidUrl = vid.link;
-        const vidTitle = vid.title;
-        const channelUrl = `https://www.youtube.com/channel/${targetYTChannel}`;
         const pubDate = vid.pubDate;
-        const author = vid.author
-        // if (vid['media:group'] && vid['media:group']['media:thumbnail']) {
-        //   console.log(`Thumbnail URL: ${vid['media:group']['media:thumbnail'].$.url}`);
-        // }
-  
-        // // Sometimes, it's also included in 'enclosure' or 'media:content' for other feeds
-        // if (vid.enclosure && vid.enclosure.url) {
-        //   console.log(`Enclosure URL: ${vid.enclosure.url}`);
-        // } 
-        console.groupCollapsed(
-          `%c${new Date().toLocaleTimeString()}`,
-          "color: #3498db; font-weight: bold"
-        );
-        console.log(`Fetched video URL: ${vidUrl}`);
-        console.log(`Fetched video title: ${vidTitle}`);
-        console.log(`Fetched channel URL: ${channelUrl}`);
-        console.log(`Fetched video pubDate: ${pubDate}`);
-        console.groupEnd();
-        
-        interaction.followUp('Success!')
+        // // if (vid['media:group'] && vid['media:group']['media:thumbnail']) {
+        // //   console.log(`Thumbnail URL: ${vid['media:group']['media:thumbnail'].$.url}`);
+        // // }
+
+        // // // Sometimes, it's also included in 'enclosure' or 'media:content' for other feeds
+        // // if (vid.enclosure && vid.enclosure.url) {
+        // //   console.log(`Enclosure URL: ${vid.enclosure.url}`);
+        // // }
+        // console.groupCollapsed(
+        //   `%c${new Date().toLocaleTimeString()}`,
+        //   "color: #3498db; font-weight: bold"
+        // );
+        // console.log(`Fetched video URL: ${vidUrl}`);
+        // console.log(`Fetched video title: ${vidTitle}`);
+        // console.log(`Fetched channel URL: ${channelUrl}`);
+        // console.log(`Fetched video pubDate: ${pubDate}`);
+        // console.groupEnd();
+        const newConfig = new ytNotifications({
+          guildId: interaction.guild.id,
+          notificationChannelId: notificationChannel.id,
+          ytChannelId: targetYTChannel,
+          customMessage: customMessage,
+          lastChecked: new Date(),
+          lastCheckedVid: {
+            url: vidUrl,
+            publishDate: pubDate,
+          },
+        });
+        await newConfig.save();
+        interaction.followUp("Success!");
       } catch (error) {
         console.error("Error parsing feed:", error);
       }
