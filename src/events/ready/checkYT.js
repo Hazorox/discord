@@ -9,7 +9,7 @@ const {
 /** @param {import('discord.js').Client} client */
 module.exports = async (client) => {
   listenForVideo();
-  setInterval(listenForVideo, 5_000);
+  setInterval(listenForVideo, 300_000);
   async function listenForVideo() {
     const configs = await NotificationConfig.find({});
     // console.log(configs);
