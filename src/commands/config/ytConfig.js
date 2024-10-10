@@ -1,16 +1,9 @@
 const ytNotifications = require("../../models/ytNotifications");
-const notificationConfigSchema = require("../../models/ytNotifications");
 const Parser = require("rss-parser");
 const {
-  Client,
   SlashCommandBuilder,
   PermissionFlagsBits,
-  ApplicationCommandOptionType,
-  ChannelType,
-  EmbedBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
+  ChannelType  
 } = require("discord.js");
 const data = new SlashCommandBuilder()
   .setName("youtube-notifications-config")
