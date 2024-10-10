@@ -12,7 +12,7 @@ module.exports = async (client) => {
   setInterval(listenForVideo, 5_000);
   async function listenForVideo() {
     const configs = await NotificationConfig.find({});
-    console.log(configs);
+    // console.log(configs);
     configs.forEach(async (config) => {
       try {
         const {
@@ -30,14 +30,18 @@ module.exports = async (client) => {
           const vid = feed.items[0];
           const vidUrl = vid.link;
           if (vidUrl === lastCheckedVid.url) {
-            console.log("Same link spotted. Skipping...");
+            // console.log("Same link spotted. Skipping...");
             return;
           }
           const vidTitle = vid.title;
           const channelUrl = `https://www.youtube.com/channel/${ytChannelId}`;
           const pubDate = vid.pubDate;
           const author = vid.author;
-          const targetMessage = customMessage?.replace('{VID_URL}',vidUrl).replace('{VID_TITLE}',vidTitle).replace('{CHANNEL_URL}',channelUrl).replace('{CHANNEL_NAME}',author)
+          const targetMessage = customMessage
+            ?.replace("{VID_URL}", vidUrl)
+            .replace("{VID_TITLE}", vidTitle)
+            .replace("{CHANNEL_URL}", channelUrl)
+            .replace("{CHANNEL_NAME}", author);
           // console.groupCollapsed(
           //   `%c${new Date().toLocaleTimeString()}`,
           //   "color: #3498db; font-weight: bold"
@@ -47,7 +51,7 @@ module.exports = async (client) => {
           // console.log(`Fetched channel URL: ${channelUrl}`);
           // console.log(`Fetched video pubDate: ${pubDate}`);
           // console.groupEnd();
-          
+
           // const newConfig = new NotificationConfig({
           //   guildId: config.guildId,
           //   notificationChannelId: config.notificationChannelId,
@@ -58,7 +62,7 @@ module.exports = async (client) => {
           // });
           // await newConfig.save()
           const embed = new EmbedBuilder()
-            .setColor('Red')
+            .setColor("Red")
             .setTitle(vidTitle)
             .setDescription(targetMessage)
             .setFooter({ text: `Published on: ${pubDate.slice(0, 10)}` })
@@ -85,18 +89,6 @@ module.exports = async (client) => {
             lastChecked: Date.now(),
             lastCheckedVid: { url: vidUrl, publishDate: pubDate },
           });
-          
-          console.log(`Checking for new video: ${vidTitle}`);
-          console.log(`Last checked video url: ${config.lastCheckedVid.url}`);
-          console.log(`Last checked video publish date: ${config.lastCheckedVid.publishDate}`);
-          console.log(`New video url: ${vidUrl}`);
-          console.log(`New video publish date: ${pubDate}`);
-
-          // await notificationChannelId.send({
-          //   embeds: [embed],
-          //   components: [buttons],
-          //   ephemeral: false,
-          // });
         } catch (error) {
           console.error("Error parsing feed:", error);
         }
