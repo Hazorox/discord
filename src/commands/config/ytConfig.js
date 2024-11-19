@@ -3,7 +3,7 @@ const Parser = require("rss-parser");
 const {
   SlashCommandBuilder,
   PermissionFlagsBits,
-  ChannelType  
+  ChannelType,
 } = require("discord.js");
 const data = new SlashCommandBuilder()
   .setName("youtube-notifications-config")
