@@ -3,12 +3,12 @@ module.exports = (client) => {
     console.log(`Logged in as ${client.user.tag}! :)`);
 
     client.user.setActivity(" You", { type: ActivityType.Watching });
-    // const user = client.users.cache.get("747177875236454550"); // Replace with the user's ID
-    // if (user) {
-    //   user.send(`Happy Eid Bud🎊🎊🎉🎉\nhttps://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExbXRtZGZteDV1OG96OW10OWhid2JuZ3oxYTQ3bG1wYzczaW42ejIyYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/TE6ac6InwlRY9gCG0m/giphy.gif\nFrom Hamza and His Son "Cot"`);
-    // } else {
-    //   console.error("User not found");
-    // }
+    const user = client.users.cache.get("810968773808881664"); // Replace with the user's ID
+    if (user) {
+      user.send(`W MOAAZ`);
+    } else {
+      console.error("User not found");
+    }
     // const generalChannel = client.channels.cache.find(channel => channel.name==="general");
     // const generalChannel = client.channels.cache.get("1215744779779047456");
     // if (generalChannel) {

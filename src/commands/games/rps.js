@@ -102,6 +102,9 @@ module.exports = {
         await interaction.editReply({embeds:[embed],components:[]})
         return;}
       })
+      // This was hardest command so far
+      // Rocko papero sciscero :P
+      // I had no idea how to do it
       // Collect user choice
       const userCollector =  reply.createMessageComponentCollector({
         time:50_000,
