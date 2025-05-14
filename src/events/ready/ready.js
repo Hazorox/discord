@@ -2,13 +2,13 @@ const {ActivityType}=require("discord.js")
 module.exports = (client) => {
     console.log(`Logged in as ${client.user.tag}! :)`);
 
-    client.user.setActivity(" You", { type: ActivityType.Watching });
-    const user = client.users.cache.get("810968773808881664"); // Replace with the user's ID
-    if (user) {
-      user.send(`W MOAAZ`);
-    } else {
-      console.error("User not found");
-    }
+    // client.user.setActivity(" You", { type: ActivityType.Watching });
+    // const user = client.users.cache.get("810968773808881664"); // Replace with the user's ID
+    // if (user) {
+    //   user.send(`W MOAAZ`);
+    // } else {
+    //   console.error("User not found");
+    // }
     // const generalChannel = client.channels.cache.find(channel => channel.name==="general");
     // const generalChannel = client.channels.cache.get("1215744779779047456");
     // if (generalChannel) {
